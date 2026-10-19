@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Imágen profesional, marketing y práctica laboral</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Gestión profesional en podoestetica, incluyendo atención y fidelización, comunicación, límites de la práctica, imagen y bioseguridad, organización de turnos, costos y precios, marketing digital y fotografía de trabajos.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores en la gestión profesional de podoestética relacionados con comunicación, organización e higiene del gabinete, manejo de turnos y precios, promoción digital, privacidad e imagen profesional, y respeto de los límites de actuación y derivación. </div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Manejo profesional de situaciones habituales en podoestética, incluyendo atención y comunicación con clientes, gestión de agenda y precios, cuidados domiciliarios, detección y derivación, fidelización, fotografía, propuestas comerciales y resolución de reclamos.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Secuencia integral de atención profesional en podoestética, desde la recepción, evaluación y bioseguridad hasta la práctica del servicio, registro fotográfico, cálculo de precios, comunicación digital, promoción y seguimiento posterior.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Atención al usuario',
+            title: 'Concepto y fidelización',
+            instruction: 'Define el concepto de atención profesional en podoestética explicando cómo la experiencia integral promueve la fidelización.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('atenci') || v.includes('calidad')) c++;
+                if (v.includes('experiencia') || v.includes('fidelizaci')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera que la satisfacción del usuario depende tanto de la técnica aplicada como del trato y acompañamiento humano.',
+            explanation: 'La atención de calidad genera una experiencia positiva que fortalece la fidelización continua del usuario.'
+        },
+        {
+            type: 'text',
+            badge: 'Comunicación clínica',
+            title: 'Escucha activa y claridad',
+            instruction: 'Clasifica las pautas de comunicación y escucha que permiten transmitir información clara antes y durante el servicio.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('Practicar')) c++;
+                if (v.includes('escucha') || v.includes('comunicar')) c++;
+                if (v.includes('consulta')) c++;
+                return c >= 2;
+            },
+            tutor: 'Repasa la importancia de responder dudas, evitar juicios sobre el estado del pie y comunicar el procedimiento.',
+            explanation: 'Practicar la escucha atenta y comunicar con claridad consolida la confianza mutua en la consulta.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Alcance profesional',
+            title: 'Reconocimiento de límites',
+            instruction: 'Selecciona las tres situaciones que exceden la práctica podoestética y requieren derivación a un profesional sanitario.',
+            items: [
+                { text: 'Presencia de infecciones o heridas abiertas', correct: true },
+                { text: 'Lesiones sospechosas con dolor agudo', correct: true },
+                { text: 'Deshidratación leve en la piel del talón', correct: false },
+                { text: 'Alteraciones cutáneas que exigen evaluación clínica.', correct: true }
+            ],
+            tutor: 'Busca aquellas manifestaciones patológicas o dolorosas que están fuera del campo de la intervención estética.',
+            explanation: 'Identificar infecciones, lesiones dolorosas o alteraciones clínicas exige derivación médica sin emitir diagnóstico.'
+        },
+        {
+            type: 'text',
+            badge: 'Presencia profesional',
+            title: 'Imagen personal y vestimenta',
+            instruction: 'Detalla las recomendaciones de presentación personal e indumentaria que garantizan seguridad e higiene laboral.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('uniforme') || v.includes('pulcro')) c++;
+                if (v.includes('higiene') || v.includes('bioseguridad') || v.includes('usuario')) c++;
+                return c >= 2;
+            },
+            tutor: 'distingue el uso de indumentaria limpia, cabello recogido y elementos de protección acordes al gabinete.',
+            explanation: 'Vestir un uniforme pulcro y cuidar la higiene proyecta bioseguridad y respeto por el usuario.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Entorno de trabajo',
+    title: 'Organización del gabinete',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. El gabinete debe presentar buena ___ para observar detalles, instrumental correctamente ___ y superficies con rigurosa ___.<br>',
+    blanks: ['iluminación', 'procesado', 'limpieza'],
+    tutor: 'Recuerda las condiciones físicas del puesto que transmiten seguridad y profesionalismo antes de atender.',
+    explanation: 'Contar con excelente iluminación, instrumental procesado y rigurosa limpieza garantiza un entorno seguro.'
+},
+        {
+            type: 'text',
+            badge: 'Gestión del tiempo',
+            title: 'Planificación de la agenda',
+            instruction: 'Expone los elementos clave que deben registrarse en la agenda para organizar la jornada y evitar demoras.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('registro') || v.includes('horarios')) &&
+                    (v.includes('acondicionamiento') || v.includes('turnos'))
+                );
+            },
+            tutor: 'Agrupa los datos del cliente, tiempo estimado del servicio y el intervalo necesario entre atenciones.',
+            explanation: 'Llevar un registro ordenado de horarios contempla el tiempo de acondicionamiento del puesto entre turnos.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Estructura económica',
+            title: 'Cálculo del precio base',
+            instruction: 'Identifica los tres componentes indispensables que integran la fórmula para determinar el precio final de un servicio.',
+            items: [
+                { text: 'Costo directo de insumos y materiales', correct: true },
+                { text: 'Valor de alquileres comerciales de la competencia.', correct: false },
+                { text: 'Gastos fijos y variables del puesto', correct: true },
+                { text: 'Valor del tiempo y margen de ganancia.', correct: true }
+            ],
+            tutor: 'Contempla la suma de recursos materiales, costos operativos generales y el reconocimiento económico del trabajo.',
+            explanation: 'Sumar el costo de insumos, los gastos del espacio y el valor del tiempo fija un precio justo.'
+        },
+        {
+            type: 'text',
+            badge: 'Estrategia de difusión',
+            title: 'Marketing en podoestética',
+            instruction: 'Describe la función principal del marketing digital aplicado a los servicios de belleza de pies y bienestar.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('marketing') || v.includes('profesional') || v.includes('visibilidad')) c++;
+                if (v.includes('valor') || v.includes('servicio')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera que la difusión no busca exagerar resultados sino comunicar con claridad la propuesta profesional.',
+            explanation: 'El marketing profesional otorga visibilidad a la propuesta destacando el valor real del servicio.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Presencia en redes',
+            title: 'Canales de comunicación',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Instagram y Facebook permiten compartir contenidos educativos y fotografías reales de los trabajos.', color: 'green' },
+                { text: 'Es obligatorio publicar contenido simultáneamente en todas las redes sociales para tener éxito.', color: 'red' },
+                { text: 'WhatsApp Business facilita la atención de consultas, catálogo de servicios y gestión de turnos.', color: 'green' },
+                { text: 'El marketing digital reemplaza por completo la necesidad de ofrecer un servicio técnico de calidad.', color: 'red' }
+            ],
+            tutor: 'Analiza la utilidad de las plataformas digitales para conectar con el público sin descuidar el servicio.',
+            explanation: 'Utilizar redes sociales y WhatsApp promociona la actividad sin sustituir la calidad técnica.'
+        },
+        {
+            type: 'text',
+            badge: 'Registro visual',
+            title: 'Fotografía de resultados',
+            instruction: 'Sintetiza los factores técnicos a considerar para capturar fotografías profesionales de antes y después.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('iluminaci') || v.includes('encuadre')) &&
+                    (v.includes('visual') || v.includes('trabajo') || v.includes('registrado'))
+                );
+            },
+            tutor: 'Observa el uso de luz uniforme, fondos limpios y mantener el mismo ángulo entre ambas tomas.',
+            explanation: 'Cuidar la iluminación y mantener el encuadre asegura la coherencia visual del trabajo registrado.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Fallas relacionales',
+            title: 'Errores en la atención',
+            instruction: 'Examina las consecuencias negativas que genera una actitud apática o impositiva durante la consulta inicial.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('apat') || v.includes('insatisfacci')) &&
+                    (v.includes('genera') || v.includes('desconfianza') || v.includes('cliente') || v.includes('inmediata'))
+                );
+            },
+            tutor: 'Reflexiona sobre cómo la falta de empatía destruye la experiencia del usuario y daña la reputación profesional.',
+            explanation: 'Mostrar apatía provoca insatisfacción inmediata, genera desconfianza y causa la pérdida del cliente.'
+        },
+        {
+            type: 'text',
+            badge: 'Desatención del puesto',
+            title: 'Insalubridad y desorden',
+            instruction: 'Evalúa el impacto negativo de atender en un gabinete mal iluminado, sucio o con insumos desorganizados.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Trabajar') || v.includes('desorden') || v.includes('riesgo')) &&
+                    v.includes('usuario')
+                );
+            },
+            tutor: 'Considera la percepción de falta de higiene y el peligro sanitario que transmite un entorno descuidado.',
+            explanation: 'Trabajar en el desorden incrementa el riesgo biológico y provoca el rechazo automático del usuario.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Deficiencias de agenda',
+            title: 'Mala gestión de turnos',
+            instruction: 'Escoge las tres consecuencias operativas derivadas de programar atenciones sin intervalos de acondicionamiento.',
+            items: [
+                { text: 'Retrasos acumulados en la jornada', correct: true },
+                { text: 'Faltas en la desinfección del puesto', correct: true },
+                { text: 'Aumento de la fidelización del cliente', correct: false },
+                { text: 'Estrés y apresuramiento técnico', correct: true }
+            ],
+            tutor: 'Identifica los problemas que surgen al no prever el tiempo de limpieza y preparación entre personas.',
+            explanation: 'Ignorar los intervalos genera retrasos, omite la desinfección del puesto y causa estrés profesional.'
+        },
+        {
+            type: 'text',
+            badge: 'Ineficiencia financiera',
+            title: 'Omisión de costos ocultos',
+            instruction: 'Explica los riesgos económicos de fijar honorarios guiándose únicamente por los precios de la competencia.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Omitir') || v.includes('costos')) &&
+                    (v.includes('financieras') || v.includes('desvalorizaci')) &&
+                    (v.includes('trabajo'))
+                );
+            },
+            tutor: 'Analiza cómo ignorar los gastos fijos de luz, alquiler y tiempo personal compromete la viabilidad del negocio.',
+            explanation: 'Omitir los costos reales genera pérdidas financieras ocultas y provoca la desvalorización del trabajo.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Descuentos compulsivos',
+    title: 'Promociones agresivas',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. Aplicar reducciones extremas de precio desvaloriza la ___ del servicio, afecta la ___ económica y no garantiza la ___ de clientes.<br>',
+    blanks: ['calidad', 'rentabilidad', 'fidelización'],
+    tutor: 'Recuerda los peligros de comercializar el servicio basándose solo en precios bajos sin medir margen.',
+    explanation: 'Regalar el trabajo degrada la calidad percibida, compromete la rentabilidad y dificulta la fidelización real.'
+},
+        {
+            type: 'text',
+            badge: 'Comunicación engañosa',
+            title: 'Expectativas irrealistas',
+            instruction: 'Juzga las implicancias éticas y legales de publicar imágenes retocadas con resultados irrealizables.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('frustraci') || v.includes('persona')) &&
+                    (v.includes('conduce') || v.includes('desacr') || v.includes('profesional'))
+                );
+            },
+            tutor: 'Observa cómo prometer mejoras mágicas o alterar fotos destruye la credibilidad del profesional.',
+            explanation: 'Recurrir al engaño genera frustración en la persona atendida y conduce al desacrédito profesional.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Falta de ética',
+            title: 'Vulneración de privacidad',
+            instruction: 'Menciona los tres errores éticos que comete el profesional al publicar contenidos de clientes sin permiso.',
+            items: [
+                { text: 'Divulgar imágenes de pies sin autorización previa', correct: true },
+                { text: 'Mostrar imágenes de instrumental esterilizado.', correct: false },
+                { text: 'Exhibir datos personales o historias clínicas', correct: true },
+                { text: 'Publicar rostros o detalles identificables', correct: true }
+            ],
+            tutor: 'Repasa las faltas a la confidencialidad y al respeto de la intimidad del usuario.',
+            explanation: 'Difundir imágenes sin permiso o revelar datos personales vulnera la privacidad del cliente.'
+        },
+        {
+            type: 'text',
+            badge: 'Registros deficientes ',
+            title: 'Mala calidad fotográfica',
+            instruction: 'Argumenta por qué fotografiar trabajos con sombras intensas o fondos desordenados arruina la imagen profesional.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('fotos') || v.includes('sombras') || v.includes('desorden')) &&
+                    (v.includes('deslucimiento') || v.includes('trabajo'))
+                );
+            },
+            tutor: 'Contempla cómo los elementos ajenos y la falta de luz opacan la pulcritud de la técnica realizada.',
+            explanation: 'Tomar fotos con sombras o en el desorden causa el deslucimiento de un buen trabajo técnico.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Incoherencia digital',
+            title: 'Discrepancia del servicio',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Promocionar higiene impecable en redes y atender en un gabinete sucio destruye la confianza.', color: 'green' },
+                { text: 'Mantener la coherencia entre lo que se muestra digitalmente y lo que se brinda consolida la marca.', color: 'green' },
+                { text: 'La publicidad en redes puede exagerar resultados si ayuda a captar nuevos clientes rápidamente.', color: 'red' },
+                { text: 'Es recomendable copiar textos de competidores para responder más rápido las consultas digitales.', color: 'red' }
+            ],
+            tutor: 'Contrasta el impacto de la autenticidad frente a las promesas publicitarias inconsistentes.',
+            explanation: 'La coherencia entre la propuesta digital y la atención real sostiene la confianza'
+        },
+        {
+            type: 'text',
+            badge: 'Práctica imprudente',
+            title: 'Inobservancia de límites',
+            instruction: 'Diferencia los riesgos de intervenir estéticamente sobre una uña con signos de micosis o infección activa.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ignorar') || v.includes('infecciones')) &&
+                    (v.includes('agravamiento') || v.includes('complicaci') || v.includes('profesionaL'))
+                );
+            },
+            tutor: 'Analiza la posibilidad de empeorar la patología del usuario y contraer responsabilidades legales.',
+            explanation: 'Ignorar infecciones provoca el agravamiento de la complicación y acarrea responsabilidad profesional.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Expectativas elevadas',
+            title: 'Usuario exigente',
+            instruction: 'Plantea la estrategia de comunicación para encauzar a una persona que solicita resultados estéticos inmediatos en uñas muy deterioradas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('Alinear') ||
+                    (
+                        (v.includes('expectativas') || v.includes('diagn') || v.includes('intervenci')) &&
+                        (v.includes('est'))
+                    )    
+                );
+            },
+            tutor: 'Considera explicar de forma transparente el alcance de la podoestética y los tiempos reales de recuperación.',
+            explanation: 'Alinear expectativas mediante un buen diagnóstico aclara los límites de la intervención estética.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Comunicación digital',
+            title: 'Consultas por mensaje',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Responder consultas por WhatsApp con amabilidad, lista de precios e información clara facilita la reserva.', color: 'green' },
+                { text: 'Es correcto contestar audios informales a cualquier hora de la noche para no perder la venta.', color: 'red' },
+                { text: 'Se deben dar diagnósticos clínicos exactos por foto cuando el cliente envía una imagen del pie.', color: 'red' },
+                { text: 'Configurar respuestas automáticas en WhatsApp Business informa los horarios de atención y servicios.', color: 'green' }
+            ],
+            tutor: 'Evalúa el manejo profesional de los canales digitales de comunicación respetando límites.',
+            explanation: 'Utilizar WhatsApp con respuestas automáticas profesionaliza la atención sin emitir diagnóstico.'
+        },
+        {
+            type: 'text',
+            badge: 'Valoración económica',
+            title: 'Objeción de precio',
+            instruction: 'Ilustra la respuesta profesional ante un usuario que cuestiona la tarifa del servicio comparándola con opciones informales.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Fundamentar') || v.includes('presupuesto')) &&
+                    (v.includes('calidad') || v.includes('insumos') || v.includes('bioseguridad'))
+                );
+            },
+            tutor: 'Enfócate en fundamentar el precio destacando la calidad de los productos, la esterilización y la capacitación.',
+            explanation: 'Fundamentar el presupuesto en la calidad de insumos y la bioseguridad justifica el valor.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Imprevistos de agenda ',
+            title: 'Demoras y ausencias',
+            instruction: 'Señala las tres acciones correctas para reestructurar la jornada cuando un cliente llega con 20 minutos de retraso.',
+            items: [
+                { text: 'Atender corriendo omitiendo la desinfección entre personas.', correct: false },
+                { text: 'Evaluar si es posible adaptar el servicio sin acortar la higiene', correct: true },
+                { text: 'Reprogramar el turno explicando de manera respetuosa el tiempo', correct: true },
+                { text: 'Ofrecer una alternativa de atención más breve si el usuario acepta', correct: true }
+            ],
+            tutor: 'Busca las alternativas que priorizan la calidad y el respeto por los turnos siguientes.',
+            explanation: 'Adaptar la atención, mantener la higiene o reprogramar el turno resguarda la agenda.'
+        },
+        {
+            type: 'text',
+            badge: 'Cuidado posterior',
+            title: 'Indicaciones domiciliarias',
+            instruction: 'Desglosa las recomendaciones domiciliarias para un cliente que presenta resequedad severa en talones tras el servicio.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Recomendar') || v.includes('hidrataci') || v.includes('diaria')) &&
+                    (v.includes('urea') || v.includes('constancia') || v.includes('est'))
+                );
+            },
+            tutor: 'Sugiere el uso diario de cremas con componentes humectantes y el calzado adecuado para prevenir fisuras.',
+            explanation: 'Recomendar hidratación diaria con urea exige constancia para sostener el resultado estético.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Detección clínica',
+            title: 'Hallazgo imprevisto',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Ante la presencia de una herida sangrante en el canal lateral, se debe suspender la técnica y derivar.', color: 'green' },
+                { text: 'Es correcto aplicar queratolíticos fuertes sobre piel agrietada para acelerar la limpieza.', color: 'red' },
+                { text: 'La profesional debe explicar con tacto que la lesión requiere la valoración de un médico podólogo.', color: 'green' },
+                { text: 'Se debe prometer al cliente que la alteración se curará por completo en la próxima sesión estética.', color: 'red' }
+            ],
+            tutor: 'Asocia la detección de anomalías con la abstención de intervenir y la derivación ética.',
+            explanation: 'Suspender la técnica ante heridas y derivar al médico demuestra responsabilidad profesional.'
+        },
+        {
+            type: 'text',
+            badge: 'Estrategias de fidelidad',
+            title: 'Tarjeta de cliente frecuente',
+            instruction: 'Diseña una propuesta de fidelización mediante incentivos o beneficios para usuarios que concurren periódicamente.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ofrecer') || v.includes('beneficio')) &&
+                    (v.includes('exclusivo') || v.includes('fidelizaci') || v.includes('continuidad') || v.includes('servicio'))
+                );
+            },
+            tutor: 'Plantea la entrega de un descuento en el décimo servicio o un tratamiento complementario de hidratación.',
+            explanation: 'Ofrecer un beneficio exclusivo incentiva la fidelización y asegura la continuidad del servicio.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Captura en gabinete',
+            title: 'Fotografía con luz limitada',
+            instruction: 'Reúne las tres soluciones técnicas para tomar una buena foto del resultado en un espacio con poca iluminación natural.',
+            items: [
+                { text: 'Utilizar una lámpara de luz fría o aro de luz enfocado', correct: true },
+                { text: 'Limpiar el lente de la cámara del celular antes de disparar', correct: true },
+                { text: 'Sostener el teléfono con firmeza o apoyo para evitar fotos movidas', correct: true },
+                { text: 'Usar filtros estridentes que modifiquen el color del esmalte.', correct: false }
+            ],
+            tutor: 'Agrupa las herramientas de iluminación auxiliar y los cuidados básicos de estabilidad en la toma.',
+            explanation: 'Enfocar con luz adecuada, limpiar el lente y estabilizar la toma logra fotos nítidas.'
+        },
+        {
+            type: 'text',
+            badge: 'Inserción laboral',
+            title: 'Propuesta para centros',
+            instruction: 'Expón el modo de presentar el porfolio profesional al postularse en un centro de estética o spa reconocido.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Presentar') || v.includes('porfolio')) &&
+                    (v.includes('antecedentes') || v.includes('laboral'))
+                );
+            },
+            tutor: 'Contempla exhibir certificaciones, fotos de trabajos reales y la metodología de bioseguridad aplicada.',
+            explanation: 'Presentar un porfolio organizado con antecedentes y protocolos demuestra idoneidad laboral.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Gestión de disconformidad',
+            title: 'Reclamo post-servicio',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La actitud correcta ante una queja es culpar de inmediato al cliente por mal uso del calzado.', color: 'red' },
+                { text: 'Ante un reclamo por salto de esmalte, se debe escuchar sin discutir y ofrecer una revisión del trabajo.', color: 'green' },
+                { text: 'Se debe ignorar los mensajes de disconformidad si el cliente ya abonó la totalidad del servicio.', color: 'red' },
+                { text: 'Registrar los inconvenientes permite detectar fallas en el procedimiento o en la calidad del producto.', color: 'green' }
+            ],
+            tutor: 'Contrasta la resolución profesional de conflictos con la postura defensiva o evasiva.',
+            explanation: 'Atender el reclamo con empatía y revisar el trabajo fortalece la atención profesional.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Inicio del servicio',
+            title: 'Recepción e higienización',
+            instruction: 'Elige los tres pasos iniciales correspondientes a la recepción y preparación del usuario en el gabinete.',
+            items: [
+                { text: 'Saludar cordialmente e invitar al usuario a acomodarse', correct: true },
+                { text: 'Iniciar inmediatamente el limado sin evaluar la piel', correct: false },
+                { text: 'Realizar la desinfección de manos propia y del pie del cliente', correct: true },
+                { text: 'Completar los datos de la ficha técnica de consulta', correct: true }
+            ],
+            tutor: 'Concéntrate en las acciones de bienvenida, desinfección preparatoria y toma de datos esenciales.',
+            explanation: 'Brindar la bienvenida, ejecutar la desinfección y registrar la ficha inicia la atención.'
+        },
+        {
+            type: 'text',
+            badge: 'Evaluación previa',
+            title: 'Inspección y consulta',
+            instruction: 'Instruye la secuencia práctica para examinar la piel y uñas identificando características o contraindicaciones.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('inspecci') || v.includes('textura') || v.includes('anomal') || v.includes('tratables'))
+                );
+            },
+            tutor: 'Detalla la observación visual de la lámina, el estado del surco, la presencia de durezas y la palpación térmica.',
+            explanation: 'Realizar la inspección visual evalúa la textura y permite descartar anomalías no tratables.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Simulación integrada',
+         title: 'Protocolo en 8 momentos',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. La secuencia práctica abarca recepción, consulta, evaluación visual, ___, procedimiento técnico, finalización, ___ y registro.<br>',
+         blanks: ['higiene', 'recomendaciones'],
+         tutor: 'Piensa en las etapas ordenadas que estructuran una atención profesional completa sin saltear pasos.',
+         explanation: 'aplicar la higiene previa, desarrollar el servicio y brindar recomendaciones completa el protocolo.'
+},
+        {
+            type: 'traffic',
+            badge: 'Registro gráfico',
+            title: 'Toma fotográfica',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Es necesario aplicar filtros de deformación digital para afinar la forma anatómica de los dedos.', color: 'red' },
+                { text: 'Colocar toallas sucias de fondo en la fotografía ayuda a mostrar el realismo de la sesión.', color: 'red' },
+                { text: 'Se debe pedir consentimiento informado al usuario antes de tomar fotografías de sus pies.', color: 'green' },
+                { text: 'La foto final debe tomarse con el pie hidratado, limpio y en una posición cómoda para la persona.', color: 'green' }
+            ],
+            tutor: 'Repasa los pasos de preparación y ética requeridos para fotografiar el trabajo final.',
+            explanation: 'Solicitar consentimiento y fotografiar con fondo limpio garantiza un registro profesional.'
+        },
+        {
+            type: 'text',
+            badge: 'Aplicación de costos',
+            title: 'Ejercicio de tarificación',
+            instruction: 'Prescribe el procedimiento matemático para calcular el costo de insumos descartables y productos por servicio.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Calcular') || v.includes('insumos')) &&
+                    (v.includes('descartables') || v.includes('determina') || v.includes('raci') || v.includes('justa'))
+                );
+            },
+            tutor: 'Divide el precio del envase por la cantidad de servicios que rinde agregando guantes, toallas y limas.',
+            explanation: 'Calcular la ración de insumos y sumar el costo de descartables determina la alícuota justa.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Canal de empresa',
+            title: 'Configuración de WhatsApp',
+            instruction: 'Determina los tres datos indispensables que deben cargarse en el perfil de WhatsApp Business profesional.',
+            items: [
+                { text: 'Memes y opiniones personales sobre política', correct: false },
+                { text: 'Nombre profesional y especialidad ofrecida', correct: true },
+                { text: 'Horarios de atención y dirección del gabinete', correct: true },
+                { text: 'Enlace al catálogo de servicios y precios', correct: true }
+            ],
+            tutor: 'Reúne los elementos que brindan información clara y corporativa a los usuarios que consultan.',
+            explanation: 'Definir el nombre, cargar los horarios y enlazar el catálogo profesionaliza el canal.'
+        },
+        {
+            type: 'text',
+            badge: 'Redacción digital',
+            title: 'Publicación promocional',
+            instruction: 'Guía la elaboración de un posteo para Instagram estructurando servicio, valor diferencial y llamada a la acción.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Destacar') || v.includes('servicio') || v.includes('diferencial')) &&
+                    (v.includes('optimiza') || v.includes('posteo'))
+                );
+            },
+            tutor: 'Redacta una propuesta que comunique la experiencia de cuidado, higiene y proporcione el enlace de contacto.',
+            explanation: 'Destacar el servicio, resaltar el valor diferencial e incluir la reserva optimiza el posteo.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Cierre del servicio',
+            title: 'Entrega de indicaciones',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Al concluir la técnica, se deben explicar los cuidados posteriores para mantener la piel suave.', color: 'green' },
+                { text: 'El registro en la ficha del cliente se realiza únicamente si la persona tuvo alguna molestia.', color: 'red' },
+                { text: 'Se debe cobrar un recargo imprevisto al finalizar si el servicio tomó más tiempo del planeado.', color: 'red' },
+                { text: 'Entregar una tarjeta con la fecha del próximo turno recomendado favorece la continuidad del cuidado.', color: 'green' }
+            ],
+            tutor: 'Analiza los momentos finales de la atención real centrados en la recomendación y agendamiento.',
+            explanation: 'Explicar cuidados, entregar el próximo turno y registrar la ficha sella el servicio.'
+        },
+        {
+            type: 'text',
+            badge: 'Colección de evidencia',
+            title: 'Montaje del porfolio',
+            instruction: 'Pauta la organización práctica de un porfolio digital en PDF agrupando certificaciones y fotos reales.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Estructurar') || v.includes('porfolio') || v.includes('cronol') || v.includes('certificaciones'))&&
+                    (v.includes('valida') || v.includes('idoneidad'))
+                );
+            },
+            tutor: 'Ordena la portada con datos, la presentación personal, la galería de fotos y las normas de bioseguridad.',
+            explanation: 'Estructurar el porfolio con orden cronológico y adjuntar certificaciones valida la idoneidad.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Seguimiento postventa',
+            title: 'Contacto de cortesía',
+            instruction: 'Compila los tres aspectos a consultar en un mensaje de seguimiento enviado a las 48 horas de la atención.',
+            items: [
+                { text: 'Exigir una reseña de cinco estrellas obligatoria', correct: false },
+                { text: 'Preguntar cómo siente la piel y el estado del pie', correct: true },
+                { text: 'Confirmar si la recomendación domiciliaria resultó clara', correct: true },
+                { text: 'Recordar la disponibilidad para futuras consultas', correct: true }
+            ],
+            tutor: 'Busca las consultas que expresan genuino interés por el bienestar del usuario tras el servicio.',
+            explanation: 'Consultar el estado del pie, verificar la recomendación y mostrar disponibilidad fideliza al cliente.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
