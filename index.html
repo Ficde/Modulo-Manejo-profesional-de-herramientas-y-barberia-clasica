@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Manejo profesional de herramientas y barbería clásica</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Fundamentos de barbería profesional, incluyendo bioseguridad, higiene y ergonomía, preparación y atención del cliente, manejo seguro de máquinas, tijeras, peines y navaja, y correcta organización del puesto de trabajo.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores y riesgos frecuentes en barbería relacionados con bioseguridad, ergonomía y orden del puesto, uso inadecuado de máquinas, tijeras y navaja, fallas en la consulta y técnica de corte, y limpieza posterior al servicio.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Adaptación segura y personalizada del servicio de barbería según las características del cabello, barba, rostro, piel y condiciones particulares del cliente, incluyendo correcciones técnicas y gestión eficiente de los tiempos de atención.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Secuencia práctica de barbería profesional, desde la higiene y preparación de herramientas hasta las técnicas de corte, desbaste, perfilado y uso seguro de la navaja, finalizando con limpieza del instrumental y recomendaciones al cliente.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Normas de bioseguridad',
+            title: 'Higiene de manos y navaja',
+            instruction: 'Define las medidas fundamentales de higiene de manos y desinfección de navajas para prevenir la contaminación cruzada en el servicio.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('bioseguridad') || v.includes('desinfecci')) c++;
+                if (v.includes('herramientas') || v.includes('descartable')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera que la hoja de la navaja debe renovarse con cada cliente y las piezas reutilizables deben sanitizarse adecuadamente.',
+            explanation: 'La bioseguridad exige realizar la desinfección de herramientas y reemplazar la hoja descartable en cada atención.'
+        },
+        {
+            type: 'text',
+            badge: 'Organización del gabinete',
+            title: 'Distribución ergonómica',
+            instruction: 'Clasifica los elementos necesarios para acondicionar un puesto de trabajo ergonómico y ordenado antes de recibir al cliente.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('ergonomía')) c++;
+                if (v.includes('gabinete') || v.includes('herramientas')) c++;
+                if (v.includes('salud')) c++;
+                return c >= 2;
+            },
+            tutor: 'Repasa la ubicación de herramientas de uso frecuente en zonas cómodas y la regulación de la altura del sillón de barbería.',
+            explanation: 'Aplicar ergonomía en el gabinete mantiene las herramientas al alcance adecuado garantizando orden y salud física.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Protocolos sanitarios',
+            title: 'Limpieza, desinfección y esterilización',
+            instruction: 'Selecciona los tres niveles del circuito de acondicionamiento de herramientas reutilizables según la norma de barbería.',
+            items: [
+                { text: 'Limpieza previa retirando cabellos y suciedad visible', correct: true },
+                { text: 'Desinfección mediante productos químicos según indicación del fabricante', correct: true },
+                { text: 'Lavado rápido con agua fría sin retirar residuos sólidos', correct: false },
+                { text: 'Esterilización de instrumentos de mayor control microbiológico', correct: true }
+            ],
+            tutor: 'Identifica la secuencia secuencial que va desde la eliminación de residuos visibles hasta el nivel máximo de eliminación microbiana.',
+            explanation: 'La limpieza remueve residuos, la desinfección elimina patógenos y la esterilización brinda la máxima bioseguridad.'
+        },
+        {
+            type: 'text',
+            badge: 'Equipamiento de corte',
+            title: 'Tipos de máquinas y funciones',
+            instruction: 'Detalla las diferencias operativas entre la máquina clipper, la trimmer de terminación y la afeitadora shaver de láminas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('clipper') || v.includes('volumen')) c++;
+                if (v.includes('trimmer') || v.includes('contornos') || v.includes('piel')) c++;
+                return c >= 2;
+            },
+            tutor: 'Distingue la herramienta para reducir volumen de la destinada a marcar contornos y la utilizada para el rasurado a nivel de piel.',
+            explanation: 'La clipper construye el volumen del corte, la trimmer perfila los contornos y la shaver rasura a ras de piel.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Componentes de la máquina',
+    title: 'Cuchillas y palanca de regulación',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. La máquina de corte posee una cuchilla ___ fija, una cuchilla ___ móvil y una ___ de regulación para ajustar la longitud del corte.<br>',
+    blanks: ['fija', 'móvil', 'palanca'],
+    tutor: 'Recuerda que la palanca lateral modifica la distancia entre dientes permitiendo obtener medidas intermedias para degradados.',
+    explanation: 'Ajustar la cuchilla fija con la móvil mediante la palanca lateral permite controlar las longitudes del corte.'
+},
+        {
+            type: 'text',
+            badge: 'Accesorios de longitud',
+            title: 'Juego de peines guía',
+            instruction: 'Expone el funcionamiento de los peines guía numerados para establecer transiciones y degradados uniformes.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('peines') || v.includes('longitud')) &&
+                    (v.includes('construir') || v.includes('degradado'))
+                );
+            },
+            tutor: 'Analiza cómo la combinación de la numeración del peine con la palanca de la máquina genera medidas intermedias precisas.',
+            explanation: 'Colocar peines guía regulados por la máquina ajusta la longitud deseada para construir un degradado armónico.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Herramientas manuales',
+            title: 'Tijeras de corte y entresacar',
+            instruction: 'Identifica las tres partes principales de una tijera profesional que garantizan su sujeción y control biomecánico.',
+            items: [
+                { text: 'Anillo para el dedo anular y apoyo para el dedo meñique', correct: true },
+                { text: 'Mango plástico desacoplable de un solo uso', correct: false },
+                { text: 'Tornillo pivote de tensión ajustable', correct: true },
+                { text: 'Hoja fija y hoja móvil alineadas', correct: true }
+            ],
+            tutor: 'Busca los componentes estructurales que alojan los dedos, regulan la tensión entre hojas y realizan el corte efectivo.',
+            explanation: 'Posicionar el anular en el anillo, ajustar el pivote y mantener alineadas las hojas asegura un corte preciso.'
+        },
+        {
+            type: 'text',
+            badge: 'Herramientas de perfilado',
+            title: 'Anatomía de la navaja profesional',
+            instruction: 'Describe las partes de la navaja profesional y el ángulo recomendado para realizar deslizamientos seguros sobre la piel.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('navaja') || v.includes('treinta') || v.includes('irritaciones')) c++;
+                if (v.includes('piel') || v.includes('cliente')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera el lomo, talón, cabezal y cola de la navaja, manteniendo una inclinación aproximada de 30 grados.',
+            explanation: 'Sostener la navaja con un ángulo de treinta grados previene irritaciones y cortes sobre la piel del cliente.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Técnica de peinado',
+            title: 'Coordinación de peine y tijera',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'El peine de corte permite elevar y distribuir el cabello uniformemente antes de aplicar la tijera', color: 'green' },
+                { text: 'Es seguro dejar las puntas de la tijera abiertas dirigidas al rostro del cliente mientras se peina', color: 'red' },
+                { text: 'La mano libre debe sostener el peine garantizando un control estable de la sección de trabajo', color: 'green' },
+                { text: 'El peine debe desinfectarse únicamente al finalizar la jornada laboral sin importar cuántos clientes se atiendan', color: 'red' }
+            ],
+            tutor: 'Observa la sincronía entre la elevación del cabello con el peine y el resguardo de las puntas de la tijera.',
+            explanation: 'Utilizar el peine para elevar secciones mientras se resguarda la tijera garantiza una coordinación segura.'
+        },
+        {
+            type: 'text',
+            badge: 'Protocolo de atención',
+            title: 'Consulta y recepción inicial',
+            instruction: 'Sintetiza la secuencia de recepción y comunicación previa recomendada antes de iniciar cualquier servicio de barbería.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('recepci') || v.includes('profesional')) &&
+                    (v.includes('acuerdo') || v.includes('servicio') || v.includes('solicitado'))
+                );
+            },
+            tutor: 'Considera que saludar, escuchar las preferencias, analizar el crecimiento natural del vello y acordar el diseño previene errores.',
+            explanation: 'La recepción profesional incluye la consulta previa para lograr un acuerdo claro sobre el servicio solicitado.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Errores en bioseguridad',
+            title: 'Reutilización de hojas y falta de asepsia',
+            instruction: 'Examina los riesgos biológicos y cutáneos derivados de no reemplazar la hoja descartable de la navaja entre clientes.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('contaminaci') || v.includes('cruzada')) &&
+                    (v.includes('hojas') || v.includes('foliculitis') || v.includes('normas') || v.includes('bioseguridad'))
+                );
+            },
+            tutor: 'Analiza cómo los microcortes y restos de fluido pueden transmitir infecciones bacterianas y patógenos sanguíneos.',
+            explanation: 'La contaminación cruzada por hojas usadas genera foliculitis severa e incumple las normas de bioseguridad.'
+        },
+        {
+            type: 'text',
+            badge: 'Fallas ergonómicas',
+            title: 'Contaminación cruzada',
+            instruction: 'Evalúa las consecuencias a largo plazo de encorvar la espalda, elevar hombros y no regular la altura del sillón de barbería.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('postura') || v.includes('forzada') || v.includes('fatiga')) &&
+                    v.includes('musculoesquelética')
+                );
+            },
+            tutor: 'Considera cómo los movimientos repetitivos con mala alineación corporal derivan en tendinitis y lesiones lumbares.',
+            explanation: 'Mantener una postura forzada genera sobrecarga articular y desencadena fatiga musculoesquelética crónica.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Riesgos operacionales',
+            title: 'Mantenimiento y desajuste de máquinas',
+            instruction: 'Escoge las tres consecuencias técnicas negativas que surgen al trabajar con máquinas de corte sin lubricación ni alineación.',
+            items: [
+                { text: 'Tirones molesto de cabello y sobrecalentamiento de cuchillas', correct: true },
+                { text: 'Desgaste prematuro del motor y cortes irregulares', correct: true },
+                { text: 'Aumento instantáneo del filo de la cuchilla por temperatura', correct: false },
+                { text: 'Irritación cutánea por fricción excesiva del metal', correct: true }
+            ],
+            tutor: 'Agrupa los problemas que afectan la comodidad del cliente, la precisión de la línea y la vida útil del equipo.',
+            explanation: 'Omitir la lubricación provoca tirones al cliente, acelera el desgaste y causa irritación en la piel.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores de degradado',
+            title: 'Uso incorrecto de peines guía',
+            instruction: 'Explica las fallas visuales e irregularidades de longitud que ocurren al saltarse números en la secuencia de peines guía.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Saltarse') || v.includes('secuencia')) &&
+                    (v.includes('escalones') || v.includes('abruptos')) &&
+                    (v.includes('transici'))
+                );
+            },
+            tutor: 'Repasa la importancia de progresar grado a grado utilizando la palanca de ajuste para borrar marcas marcadas.',
+            explanation: 'Saltarse la secuencia genera líneas marcadas y escalones abruptos que rompen la transición del corte.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Manejo inseguro de tijeras',
+    title: 'Puntas desprotegidas y cortes involuntarios',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. Soltar el control de la tijera durante el peinado expone las ___ hacia el cliente, incrementando el riesgo de ___ o pinchazos en la ___.<br>',
+    blanks: ['puntas', 'cortes', 'piel'],
+    tutor: 'Recuerda que la tijera debe guardarse en la palma mientras la mano maneja el peine sobre el cabello.',
+    explanation: 'Dejar las puntas expuestas causa cortes accidentales y lesiones punzantes en la piel del cliente.'
+},
+        {
+            type: 'text',
+            badge: 'Fallas en el rasurado',
+            title: 'Ángulo excesivo de navaja',
+            instruction: 'Juzga el impacto cutáneo de trabajar con la navaja inclinada a más de 45 grados sobre la piel del rostro.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('angulo') || v.includes('raspa')) &&
+                    (v.includes('epidermis') || v.includes('irritaci') || v.includes('sangrantes'))
+                );
+            },
+            tutor: 'Contempla el deslizamiento suave con el raspado agresivo que incide perpendicularmente sobre la epidermis.',
+            explanation: 'Abrir demasiado el angulo raspa la epidermis provocando irritación severa y micro cortes sangrantes.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Deficiencias en comunicación',
+            title: 'Omisión de la consulta previa',
+            instruction: 'Analiza las tres complicaciones comerciales y técnicas que se producen al cortar sin realizar una consulta previa detallada.',
+            items: [
+                { text: 'Remoción excesiva de cabello no deseada por el cliente', correct: true },
+                { text: 'Garantía de un corte rápido sin necesidad de ajustes', correct: false },
+                { text: 'Incomodidad por no contemplar remolinos o dirección natural', correct: true },
+                { text: 'Disconformidad con el estilo final y pérdida de fidelización.', correct: true }
+            ],
+            tutor: 'Identifica los problemas de insatisfacción derivados de asumir preferencias en vez de acordarlas explícitamente.',
+            explanation: 'Ignorar la consulta previa provoca un corte no deseado, ignora remolinos y destruye la confianza.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores de seccionado',
+            title: 'Falta de guías en corte clásico',
+            instruction: 'Fundamenta por qué cortar la zona superior sin establecer una línea de guía fija o móvil arruina la simetría del peinado',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Prescindir') || v.includes('desproporci') || v.includes('visual')) &&
+                    (v.includes('simetr') || v.includes('dise'))
+                );
+            },
+            tutor: 'Considera cómo la falta de una referencia constante de longitud produce traslapos desiguales y zonas desproporcionadas.',
+            explanation: 'Prescindir de una guía clara genera desproporción visual y destruye la simetría del diseño clásico.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Insalubridad en gabinete',
+            title: 'Acumulación de cabello y suciedad',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Dejar cabellos sueltos en el puesto de trabajo entre clientes proyecta falta de higiene y profesionalismo.', color: 'green' },
+                { text: 'Las superficies desordenadas aumentan la probabilidad de caídas o tropiezos con cables de máquinas.', color: 'green' },
+                { text: 'Es aceptable usar la misma capa llena de pelos para agilizar la atención en horarios concurridos.', color: 'red' },
+                { text: 'Sacudir los peinadores en presencia del cliente es una práctica recomendada de limpieza rápida.', color: 'red' }
+            ],
+            tutor: 'Analiza cómo la acumulación de residuos degrada la experiencia del cliente y la seguridad del entorno.',
+            explanation: 'El desorden en el gabinete transmite insalubridad y eleva los riesgos de accidentes laborales.'
+        },
+        {
+            type: 'text',
+            badge: 'Descuidos en la terminación',
+            title: 'Falta de limpieza post-servicio',
+            instruction: 'sopesa la importancia de retirar completamente los pelos cortados y aplicar loción humectante al finalizar el procedimiento.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('limpieza') || v.includes('final')) &&
+                    (v.includes('aplicaci') || v.includes('hidratante') || v.includes('cliente'))
+                );
+            },
+            tutor: 'Observa cómo los residuos de cabello pican en el cuello y la piel rasurada requiere calmar la inflamación.',
+            explanation: 'La limpieza final y la aplicación de loción hidratante garantizan el confort total del cliente.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Pieles reactivas',
+            title: 'Cliente con tendencia a foliculitis',
+            instruction: 'Plantea el protocolo de afeitado suave a aplicar en un cliente con historial de irritación severa en el cuello.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('preparaci') ||
+                    (
+                        (v.includes('reduce') || v.includes('fricci') || v.includes('piel')) &&
+                        (v.includes('inflamaci'))
+                    )    
+                );
+            },
+            tutor: 'Enfatiza el uso de toalla tibia previa, productos lubricantes de alta protección y pases a favor del crecimiento.',
+            explanation: 'La preparación térmica reduce la fricción de la navaja y calma la piel propensa a la inflamación.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Remolinos en la coronilla',
+            title: 'Manejo de uña gruesa',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Para cortar una zona con remolino es necesario observar la dirección natural de caída antes de reducir longitud.', color: 'green' },
+                { text: 'El cabello en el centro de un remolino debe cortarse lo más corto posible para forzar su caída plana.', color: 'red' },
+                { text: 'Los remolinos deben ignorarse siguiendo siempre un patrón de seccionado rígido de noventa grados.', color: 'red' },
+                { text: 'Conservar un peso adecuado sobre el remolino evita que el cabello se levante desordenadamente.', color: 'green' }
+            ],
+            tutor: 'Evalúa cómo la dirección del nacimiento condiciona la tensión y la longitud requerida en la coronilla.',
+            explanation: 'Respetar la caída natural del vello y mantener el peso adecuado controla los remolinos rebeldes.'
+        },
+        {
+            type: 'text',
+            badge: 'Visagismo de barba',
+            title: 'Estilización en rostro redondo',
+            instruction: 'Diseña la estrategia de perfilado de barba conveniente para alargar visualmente un rostro de morfología redonda.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Perfilar') || v.includes('laterales')) &&
+                    (v.includes('volumen') || v.includes('proporci') || v.includes('rostro'))
+                );
+            },
+            tutor: 'Considera dar mayor volumen en la zona del mentón y recortar de manera ajustada las mejillas y laterales.',
+            explanation: 'Perfilar los laterales de forma ajustada y dar volumen al mentón estiliza la proporción del rostro.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Transformación radical',
+            title: 'Degradado desde cabello largo',
+            instruction: 'Ilustra los tres pasos secuenciales para realizar un fade corto sobre un cliente que se presenta con cabello muy largo.',
+            items: [
+                { text: 'Pasado directo de shaver a máxima velocidad sobre el cabello largo', correct: false },
+                { text: 'Desbaste previo de volumen con clipper y peine guía alto', correct: true },
+                { text: 'Marcado de la línea de guía inicial para el degradado', correct: true },
+                { text: 'Borrado de líneas intermedias mediante palanca de ajuste.', correct: true }
+            ],
+            tutor: 'Selecciona el procedimiento que va desde la eliminación de masa excedente hasta la pulidez del degradado.',
+            explanation: 'Retirar el volumen excedente, establecer la guía y graduar con la palanca ordena la transformación.'
+        },
+        {
+            type: 'text',
+            badge: 'Clientes vulnerables',
+            title: 'Atención a adulto mayor',
+            instruction: 'Desglosa las precauciones de presión y manipulación al trabajar con máquinas y tijeras en cueros cabelludos delgados.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Trabajar') || v.includes('delicadeza') || v.includes('presi')) &&
+                    (v.includes('protecci') || v.includes('piel') || v.includes('brindar'))
+                );
+            },
+            tutor: 'Considera la fragilidad epidérmica y la necesidad de evitar pases bruscos o apoyo excesivo de la cuchilla.',
+            explanation: 'Trabajar con delicadeza, moderar la presión de las máquinas y brindar protección cuida la piel frágil.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Seguridad operativa',
+            title: 'Cliente con movimientos involuntarios',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Al detectar movimientos bruscos en el cliente se deben retirar las herramientas filosas inmediatamente.', color: 'green' },
+                { text: 'Es seguro mantener la navaja abierta rozando la piel aunque el cliente realice giros de cabeza repentinos.', color: 'red' },
+                { text: 'Utilizar la mano libre para estabilizar suavemente la cabeza del cliente brinda mayor control técnico.', color: 'green' },
+                { text: 'Debe incrementarse la velocidad del corte para terminar antes de que el cliente vuelva a moverse.', color: 'red' }
+            ],
+            tutor: 'Prioriza la anticipación y el anclaje seguro de las manos para prevenir accidentes ante sobresaltos.',
+            explanation: 'Retirar las herramientas ante sobresaltos y estabilizar al cliente previene accidentes en el gabinete.'
+        },
+        {
+            type: 'text',
+            badge: 'Corrección técnica',
+            title: 'Arreglo de asimetrías previas',
+            instruction: 'Reúne las acciones de evaluación y reestructuración para corregir un degradado desigual realizado por otro barbero.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('diagn') || v.includes('preciso')) &&
+                    (v.includes('nivelaci') || v.includes('contornos') || v.includes('armon') || v.includes('corte'))
+                );
+            },
+            tutor: 'Analiza la altura del lado más corto para igualar el lado opuesto sin perder la estructura general del corte.',
+            explanation: 'Realizar un diagnóstico preciso permite la nivelación de los contornos para devolver la armonía al corte.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Zonas de compromiso',
+            title: 'Lunares y cicatrices en barba',
+            instruction: 'Expón las tres pautas de seguridad para perfilar con navaja en mejillas que presentan lunares abultados o cicatrices.',
+            items: [
+                { text: 'Bordeado cuidadoso rodeando la protuberancia con la punta de la hoja', correct: true },
+                { text: 'Estiramiento firme de la piel desplazando la lesión de la línea de corte', correct: true },
+                { text: 'Uso preferente de trimmer de precisión en lugar de hoja expuesta', correct: true },
+                { text: 'Corte directo sobre el lunar para igualar la superficie cutánea.', correct: false }
+            ],
+            tutor: 'Busca las maniobras de protección que evitan enganchar o sangrar protuberancias vasculares en la piel.',
+            explanation: 'Bordear las lesiones, estirar la piel para apartarlas y usar trimmer evita cortes dolorosos.'
+        },
+        {
+            type: 'text',
+            badge: 'Gestión del tiempo',
+            title: 'Reorganización ante retrasos',
+            instruction: 'Elige la conducta técnica y comunicativa para gestionar un atraso en la agenda sin comprometer la bioseguridad ni el acabado.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('transparencia') || v.includes('cliente')) &&
+                    (v.includes('bioseguridad') || v.includes('calidad'))
+                );
+            },
+            tutor: 'Considera informar la demora al cliente, simplificar pasos no esenciales y mantener rigurosa la esterilización.',
+            explanation: 'Mantener transparencia con el cliente y optimizar pasos conserva la bioseguridad y la calidad.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Preferencias complejas',
+            title: 'Ajuste de expectativas del cliente',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Es profesional prometer exactamente la foto mostrada por el cliente aunque su vello no tenga la misma textura.', color: 'red' },
+                { text: 'Si un cliente solicita un estilo incompatible con su densidad capilar, se le deben explicar las limitaciones de forma clara.', color: 'green' },
+                { text: 'El barbero debe realizar el corte solicitado a ciegas sin emitir recomendación técnica alguna.', color: 'red' },
+                { text: 'Proponer alternativas personalizadas genera confianza y asegura un resultado estético favorecedor.', color: 'green' }
+            ],
+            tutor: 'Evalúa la importancia del asesoramiento honesto basado en la textura, remolinos y densidad real.',
+            explanation: 'Explicar las limitaciones técnicas y sugerir alternativas personalizadas asegura la satisfacción del cliente.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Preparación del servicio',
+            title: 'Higienización y acomodación del cliente',
+            instruction: 'Instruye los tres pasos iniciales para recibir y proteger al cliente antes de iniciar cualquier maniobra de corte.',
+            items: [
+                { text: 'Higienización profunda de manos antes del contacto', correct: true },
+                { text: 'Encendido directo de la máquina sobre el cabello sin preguntar', correct: false },
+                { text: 'Colocación de banda protectora de cuello y capa limpia', correct: true },
+                { text: ' Acomodación ergonómica de la altura del sillón', correct: true }
+            ],
+            tutor: 'Agrupa las acciones de bioseguridad, protección textil del cliente y ajuste biomecánico de la silla.',
+            explanation: 'Realizar la higiene de manos, colocar la capa y regular el sillón inicia un servicio profesional'
+        },
+        {
+            type: 'text',
+            badge: 'Puesta a punto',
+            title: 'Inspección y lubricación de clipper',
+            instruction: 'Prescribe el procedimiento de verificación de alineación y aplicación de lubricante en cuchillas previo al encendido',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Verificar') || v.includes('alineaci') || v.includes('lubricante') || v.includes('eficiente'))
+                );
+            },
+            tutor: 'Detalla el retiro de pelos con cepillo, la gota de aceite en puntos de fricción y la comprobación sonora del motor.',
+            explanation: 'Verificar la alineación de las cuchillas y colocar aceite lubricante garantiza un corte suave y eficiente.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Montaje de corte',
+         title: 'Carga segura de hoja en navaja',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. Para cargar la navaja se retira el envoltorio del ___ descartable, se parte la hoja al medio y se encastra firmemente en el ___ de la herramienta.<br>',
+         blanks: ['repuesto', 'cabezal'],
+         tutor: 'Recuerda tomar la hoja por los extremos no filosos y verificar que no sobresalga en ángulos irregulares.',
+         explanation: 'Manipular el repuesto con precaución y fijarlo en el cabezal evita accidentes durante la carga.'
+},
+        {
+            type: 'traffic',
+            badge: 'Arquitectura del corte',
+            title: 'Seccionado clásico en cuatro partes',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Las secciones deben trazarse con líneas irregulares y sin peinar el cabello circundante.', color: 'red' },
+                { text: 'El seccionado es innecesario en cortes con tijera si se trabaja rápidamente.', color: 'red' },
+                { text: 'Dividir la cabeza desde el centro de la frente hasta la nuca establece la simetría central.', color: 'green' },
+                { text: 'La separación de oreja a oreja delimita la zona anterior de la posterior para trabajar ordenadamente.', color: 'green' }
+            ],
+            tutor: 'Considera la importancia de las líneas divisorias para controlar la simetría y las longitudes laterales.',
+            explanation: 'Trazar la simetría central y separar las secciones de trabajo garantiza un orden estructural.'
+        },
+        {
+            type: 'text',
+            badge: 'Técnica con máquina',
+            title: 'Clipper sobre peine en laterales',
+            instruction: 'Determina la coordinación manual requerida para elevar el cabello con el peine y pasar la clipper de forma plana.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('elevaci') || v.includes('peine')) &&
+                    (v.includes('plano') || v.includes('recibir') || v.includes('desvanecido') || v.includes('parejo'))
+                );
+            },
+            tutor: 'Enfócate en mantener el peine rígido como guía angular sin presionar la máquina contra el cuero cabelludo.',
+            explanation: 'Mantener la elevación con el peine y pasar la máquina en plano crea un desvanecido parejo.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Definición de bordes',
+            title: 'Perfilado con trimmer en patillas y nuca',
+            instruction: 'Guía las tres acciones de precisión para delimitar los contornos naturales del cuello y las patillas con la trimmer.',
+            items: [
+                { text: 'Marcado agresivo ingresando dentro de la línea de nacimiento natural', correct: false },
+                { text: 'Apoyo suave de la cuchilla definiendo la línea natural', correct: true },
+                { text: 'Movimiento rectilíneo descendente para limpiar el vello sobrante', correct: true },
+                { text: 'Retiro de pelos sueltos con cepillo de bledo o toalla seca', correct: true }
+            ],
+            tutor: 'Busca las maniobras de apoyo leve, recorrido hacia afuera y limpieza de la zona recién contorneada.',
+            explanation: 'Apoyar con suavidad sobre la línea natural, realizar el desplazamiento y cepillar los residuos logra contornos limpios.'
+        },
+        {
+            type: 'text',
+            badge: 'Ejecución de rasurado',
+            title: 'Deslizamiento de navaja a 30 grados',
+            instruction: 'Pauta la técnica de tensión de piel con la mano libre y deslizamiento a favor del vello con la navaja inclinada.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('tensión') || v.includes('piel') || v.includes('inclinaci')) &&
+                    (v.includes('rasurado') || v.includes('suavidad'))
+                );
+            },
+            tutor: 'Describe el estiramiento de la piel en dirección opuesta al pase para crear una superficie plana y sin pliegues.',
+            explanation: 'Aplicar tensión en la piel y mantener la inclinación a treinta grados permite un rasurado de suavidad superior.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Técnica con tijera',
+            title: 'Corte recto sobre guía móvil',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La guía móvil avanza con cada sección tomada sirviendo de referencia de longitud para la siguiente.', color: 'green' },
+                { text: 'Debe tomarse una cantidad de cabello tan gruesa que impida ver la línea de corte previa.', color: 'red' },
+                { text: 'El movimiento de corte debe realizarse moviendo ambas hojas por igual sin fijar la hoja inferior.', color: 'red' },
+                { text: 'La tensión aplicada por los dedos guía debe mantenerse uniforme en todo el recorrido.', color: 'green' }
+            ],
+            tutor: 'Observa la visibilidad de la sección anterior entre los dedos y la firmeza del dedo pulgar en el anillo.',
+            explanation: 'Visualizar la guía transparente, aplicar tensión pareja y accionar la hoja móvil asegura la precisión.'
+        },
+        {
+            type: 'text',
+            badge: 'Finalización higiénica',
+            title: 'Acondicionamiento de instrumental post-servicio',
+            instruction: 'Compila los pasos de desinfección y guardado del instrumental al concluir la atención del cliente',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ejecutar') || v.includes('limpieza') || v.includes('desinfectante') || v.includes('almacenar'))&&
+                    (v.includes('rutina') || v.includes('sanitaria'))
+                );
+            },
+            tutor: 'Contempla el cepillado de pelos, rociado con spray desinfectante de cuchillas y guardado en estuche protegido.',
+            explanation: 'Ejecutar la limpieza profunda, aplicar desinfectante y almacenar en resguardo concluye la rutina sanitaria.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Asesoramiento post-servicio',
+            title: 'Recomendaciones de cuidado y peinado',
+            instruction: 'Señala las tres pautas de asesoramiento final que deben entregarse al cliente para el mantenimiento de su corte o barba.',
+            items: [
+                { text: 'Exigencia de no lavar el cabello por una semana completa', correct: false },
+                { text: 'Indicación del producto de peinado adecuado según textura', correct: true },
+                { text: 'Frecuencia recomendada de retoque para conservar la forma', correct: true },
+                { text: 'Pautas de hidratación cutánea post-afeitado en el hogar', correct: true }
+            ],
+            tutor: 'Agrupa las recomendaciones de cosmética capilar, periodicidad de visita a la barbería y cuidado de la piel.',
+            explanation: 'Recomendar el producto de peinado, sugerir la frecuencia de retoque y pautar la hidratación fideliza al cliente.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
